@@ -719,6 +719,8 @@ function updateProgress(){
   const bar = $('progressBar') || $('progress');
   if (bar) { const pct = Math.min(100, saved.done.length / wordsFinal.length * 100); if ('value' in bar) bar.value = pct; else bar.style.width = `${pct}%`; }
   const total = $('totalWords'); if (total) total.textContent = wordsFinal.length;
+  const progressText = $('progressText'); if (progressText) progressText.textContent = `${saved.learned} / 25 kelime`;
+  const progressPercent = $('progressPercent'); if (progressPercent) progressPercent.textContent = `${Math.min(100, Math.round(saved.learned / 25 * 100))}%`;
 }
 function renderWord(){
   const word = wordsFinal[index % wordsFinal.length]; answered = false;
@@ -726,6 +728,7 @@ function renderWord(){
   const ex = $('wordExample') || $('example'); if (ex) ex.textContent = word.ex;
   const input = $('answerInput') || $('translationInput') || $('answer'); if (input) input.value = '';
   const feedback = $('feedback'); if (feedback) feedback.textContent = '';
+  const next = $('nextWord') || $('nextBtn'); if (next) next.hidden = true;
   const number = $('wordNumber'); if (number) number.textContent = `${index + 1} / ${wordsFinal.length}`;
   updateProgress();
 }
@@ -741,7 +744,8 @@ function checkAnswer(){
   const wordIndex = index % wordsFinal.length;
   if (!saved.done.includes(wordIndex)) { saved.done.push(wordIndex); saved.coins += 5; }
   if (!saved.doneToday.includes(wordIndex)) { saved.doneToday.push(wordIndex); saved.learned += 1; }
-  if (feedback) feedback.textContent = 'Doğru! +5 puan';
+  if (feedback) feedback.textContent = 'Doğru! +5 coin. Sonraki kelimeye geçmek için aşağıya bas.';
+  const next = $('nextWord') || $('nextBtn'); if (next) next.hidden = false;
   save(); updateProgress();
 }
 function nextWord(){ index = (index + 1) % wordsFinal.length; renderWord(); }
@@ -758,10 +762,16 @@ function startGame(){
   area.append(left,right);
 }
 function setupTabs(){
-  document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>{
-    const target=btn.dataset.tab;
-    document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b===btn));
-    document.querySelectorAll('[data-panel]').forEach(panel=>panel.hidden=panel.dataset.panel!==target);
+  const buttons = document.querySelectorAll('[data-page]');
+  const pages = document.querySelectorAll('.page');
+  buttons.forEach(btn => btn.addEventListener('click', () => {
+    const target = btn.dataset.page;
+    buttons.forEach(b => b.classList.toggle('active', b === btn));
+    pages.forEach(page => { page.hidden = page.id !== target; });
+  }));
+  document.querySelectorAll('.quiz-option[data-answer]').forEach(btn => btn.addEventListener('click', () => {
+    const out = $('grammarFeedback');
+    if (out) out.textContent = btn.dataset.answer === 'bin' ? 'Doğru! Ich bin müde.' : 'Tekrar dene. Doğru cevap: bin';
   }));
 }
 function grammarQuiz(){
