@@ -717,7 +717,7 @@ function updateProgress(){
   if (count) count.textContent = `${Math.min(saved.learned, wordsFinal.length)} / ${wordsFinal.length}`;
   const coins = $('coins'); if (coins) coins.textContent = saved.coins;
   const bar = $('progressBar') || $('progress');
-  if (bar) { const pct = Math.min(100, saved.done.length / wordsFinal.length * 100); if ('value' in bar) bar.value = pct; else bar.style.width = `${pct}%`; }
+  if (bar) { const pct = Math.min(100, saved.learned / 25 * 100); if ('value' in bar) bar.value = pct; else bar.style.width = `${pct}%`; }
   const total = $('totalWords'); if (total) total.textContent = wordsFinal.length;
   const progressText = $('progressText'); if (progressText) progressText.textContent = `${saved.learned} / 25 kelime`;
   const progressPercent = $('progressPercent'); if (progressPercent) progressPercent.textContent = `${Math.min(100, Math.round(saved.learned / 25 * 100))}%`;
@@ -729,7 +729,7 @@ function renderWord(){
   const input = $('answerInput') || $('translationInput') || $('answer'); if (input) input.value = '';
   const feedback = $('feedback'); if (feedback) feedback.textContent = '';
   const next = $('nextWord') || $('nextBtn'); if (next) next.hidden = true;
-  const number = $('wordNumber'); if (number) number.textContent = `${index + 1} / ${wordsFinal.length}`;
+  const number = $('wordNumber') || $('counter'); if (number) number.textContent = `Kelime ${index + 1} / ${wordsFinal.length}`;
   updateProgress();
 }
 function checkAnswer(){
