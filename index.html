@@ -6,10 +6,50 @@
   <meta name="theme-color" content="#101426">
   <meta name="description" content="A1 ve A2 Almanca kelime, gramer ve eşleştirme oyunu.">
   <title>Deutsch Quest | Almanca Öğren</title>
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
-  <main class="app">
+  <section id="welcomeScreen" class="welcome-screen">
+    <div class="welcome-card">
+      <div class="welcome-brand">
+        <div class="welcome-logo">🇩🇪</div>
+        <div><h1>Deutsch <span>Quest</span></h1><p class="subtitle">Her gün biraz Almanca.</p></div>
+      </div>
+      <p class="eyebrow">HOŞ GELDİN</p>
+      <h2>Almanca yolculuğuna başla</h2>
+      <p class="welcome-description">Önce seviyeni seç. Sonra hesabınla veya misafir olarak devam et.</p>
+      <div class="entry-level-options" role="group" aria-label="Başlangıç seviyesi">
+        <button type="button" class="entry-level-btn active" data-entry-level="A1" aria-pressed="true">
+          <strong>A1</strong><span>Başlangıç</span><small>Temel kelimeler ve cümleler</small>
+        </button>
+        <button type="button" class="entry-level-btn" data-entry-level="A2" aria-pressed="false">
+          <strong>A2</strong><span>Temel seviye</span><small>Günlük konuşma ve gramer</small>
+        </button>
+      </div>
+      <div class="auth-section-title"><span></span><small>NASIL DEVAM ETMEK İSTERSİN?</small><span></span></div>
+      <div class="auth-methods">
+        <button id="googleLoginBtn" type="button" class="auth-method google-method"><span class="provider-mark google-mark">G</span><span>Google ile devam et</span></button>
+        <button id="facebookLoginBtn" type="button" class="auth-method facebook-method"><span class="provider-mark facebook-mark">f</span><span>Facebook ile devam et</span></button>
+        <button id="emailChoiceBtn" type="button" class="auth-method email-method"><span class="provider-mark email-mark">✉</span><span>E-posta ile devam et</span></button>
+      </div>
+      <form id="emailAuthForm" class="email-auth-form" hidden>
+        <label for="emailInput">E-posta adresi</label>
+        <input id="emailInput" type="email" placeholder="ornek@gmail.com" autocomplete="email" required>
+        <label for="passwordInput">Şifre</label>
+        <input id="passwordInput" type="password" placeholder="En az 6 karakter" minlength="6" autocomplete="current-password" required>
+        <button id="emailSubmitBtn" type="submit" class="button primary">Giriş yap</button>
+        <button id="emailModeToggle" type="button" class="text-button">Yeni misin? Hesap oluştur</button>
+      </form>
+      <button id="accountContinueBtn" type="button" class="button primary account-continue" hidden>Seçtiğim seviyede devam et</button>
+      <div class="auth-divider"><span>veya</span></div>
+      <button id="guestBtn" type="button" class="button guest-button">👤 Misafir olarak devam et</button>
+      <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+      <p id="authSetupNote" class="auth-setup-note">E-posta, Google ve Facebook girişini çalıştırmak için Firebase bağlantısı kurulmalı. Şimdilik misafir girişi kullanılabilir.</p>
+      <p class="welcome-privacy">İlerlemen şu an bu cihazda saklanır. Hesapla giriş, farklı cihazlarda ilerleme eşitlemesi anlamına henüz gelmez.</p>
+    </div>
+  </section>
+
+  <main id="appShell" class="app" hidden>
     <header class="topbar">
       <div>
         <p class="eyebrow">ALMANCA ÖĞRENME UYGULAMASI</p>
@@ -31,18 +71,6 @@
       <p class="muted">İlk kez doğru bildiğin her kelime için 5 coin kazanırsın.</p>
     </section>
 
-
-    <section class="panel level-selector" aria-label="Almanca öğrenme seviyesi">
-      <div class="level-selector-copy">
-        <p class="eyebrow">ÖĞRENME SEVİYESİ</p>
-        <h2>Seviyeni seç</h2>
-        <p class="muted">Kelimeler, gramer ve oyunlar seçtiğin seviyeye göre değişir.</p>
-      </div>
-      <div class="level-options" role="group" aria-label="Seviye seçimi">
-        <button type="button" class="level-option active" data-level="A1" aria-pressed="true"><strong>A1</strong><span>Başlangıç</span></button>
-        <button type="button" class="level-option" data-level="A2" aria-pressed="false"><strong>A2</strong><span>Temel seviye</span></button>
-      </div>
-    </section>
 
     <section id="learn" class="panel page">
       <div class="section-heading">
@@ -133,6 +161,12 @@
         <button type="submit" class="button primary">Profili kaydet</button>
         <p id="profileFeedback" class="feedback" aria-live="polite"></p>
       </form>
+      <h3 class="profile-section-title">🎯 Öğrenme seviyen</h3>
+      <p class="muted">İstediğin zaman A1 ve A2 arasında geçiş yapabilirsin.</p>
+      <div class="profile-level-options" role="group" aria-label="Profil seviye seçimi">
+        <button type="button" class="level-option" data-profile-level="A1" aria-pressed="false"><strong>A1</strong><span>Başlangıç</span></button>
+        <button type="button" class="level-option" data-profile-level="A2" aria-pressed="false"><strong>A2</strong><span>Temel seviye</span></button>
+      </div>
       <h3 class="profile-section-title">📊 İstatistiklerin</h3>
       <div class="profile-stats">
         <div class="stat-card"><span>🔥 Günlük seri</span><strong id="currentStreak">0 gün</strong></div>
@@ -144,6 +178,11 @@
       </div>
       <h3 class="profile-section-title">🎖️ Başarı rozetleri</h3>
       <div id="badgeGrid" class="badge-grid"></div>
+      <div class="account-session">
+        <p class="eyebrow">HESAP DURUMU</p>
+        <p id="accountStatus" class="muted">Misafir hesap</p>
+        <button id="logoutBtn" type="button" class="button secondary">Giriş ekranına dön</button>
+      </div>
       <p class="profile-note muted">Profilin ve ilerlemen bu cihazın tarayıcısında saklanır. Başka cihaza otomatik aktarılmaz.</p>
     </section>
 
@@ -156,6 +195,9 @@
 
     <footer><span>Deutsch Quest</span><span>💜 Öğrenmeye devam et!</span></footer>
   </main>
-  <script src="script.js?v=8"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js?v=1"></script>
+  <script src="script.js?v=9"></script>
 </body>
 </html>
