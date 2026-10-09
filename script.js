@@ -132,7 +132,7 @@
   const saved = readSave();
   let selectedLevel = saved.level === "A2" ? "A2" : "A1";
   saved.level = selectedLevel;
-  let index = 0;
+  let studyQueue = [];
   let answered = false;
   let nextTimer = null;
   let questionIndex = -1;
@@ -190,38 +190,58 @@
     window.speechSynthesis.speak(utterance);
   }
 
+  function availableWordIds() {
+    return words.map((word, id) => ({word, id}))
+      .filter(item => item.word.level === selectedLevel && !saved.done.includes(item.id))
+      .map(item => item.id);
+  }
   function availableWords() {
-    return words.filter(word => word.level === selectedLevel);
+    return availableWordIds().map(id => words[id]);
+  }
+  function resetStudyQueue() {
+    studyQueue = availableWordIds();
   }
   function renderWord() {
     if (nextTimer !== null) window.clearTimeout(nextTimer);
     nextTimer = null;
-    const levelWords = availableWords();
-    if (index >= levelWords.length) index = 0;
-    const word = levelWords[index];
     answered = false;
+    const wordId = studyQueue[0];
+    const word = wordId === undefined ? null : words[wordId];
+    $("answer").value = "";
+    $("nextBtn").hidden = true;
+    $("speakWord").disabled = !word;
+    $("speakExample").disabled = !word;
+    if (!word) {
+      $("word").textContent = "Tebrikler! 🎉";
+      $("example").textContent = "Bu seviyedeki tüm kelimeleri öğrendin.";
+      $("counter").textContent = "Tamamlandı";
+      $("levelTag").textContent = selectedLevel;
+      $("answer").disabled = true;
+      $("checkBtn").disabled = true;
+      setFeedback($("feedback"), "Bu seviyedeki bütün kelimeleri doğru bildin. Diğer seviyeyi seçebilirsin.", "success");
+      updateProgress();
+      return;
+    }
     $("word").textContent = word.de;
     $("example").textContent = word.ex;
-    $("counter").textContent = "Kelime " + (index + 1) + " / " + levelWords.length;
+    $("counter").textContent = "Kalan kelime: " + studyQueue.length;
     $("levelTag").textContent = word.level;
-    $("answer").value = "";
     $("answer").disabled = false;
     $("checkBtn").disabled = false;
-    $("nextBtn").hidden = true;
     setFeedback($("feedback"), "", "");
     updateProgress();
   }
   function nextWord() {
     if (nextTimer !== null) window.clearTimeout(nextTimer);
     nextTimer = null;
-    index = (index + 1) % availableWords().length;
     renderWord();
-    $("answer").focus();
+    if (!$("answer").disabled) $("answer").focus();
   }
   function checkAnswer() {
     if (answered) return;
-    const word = availableWords()[index];
-    const wordId = words.indexOf(word);
+    const wordId = studyQueue[0];
+    if (wordId === undefined) return;
+    const word = words[wordId];
     const given = normalize($("answer").value);
     if (!given) {
       setFeedback($("feedback"), "Önce Türkçe anlamını yaz.", "error");
@@ -229,22 +249,30 @@
       return;
     }
     const correct = word.tr.some(t => normalize(t) === given);
-    if (!correct) {
-      setFeedback($("feedback"), "Tam olmadı. İpucu: " + word.tr.join(" / "), "error");
-      return;
-    }
     answered = true;
     $("checkBtn").disabled = true;
     $("answer").disabled = true;
+    $("nextBtn").hidden = false;
+    if (!correct) {
+      const wrongId = studyQueue.shift();
+      studyQueue.push(wrongId);
+      $("nextBtn").textContent = "Sonraki kelime →";
+      setFeedback($("feedback"), "Yanlış. Doğrusu: " + word.tr.join(" / ") + ". Bu kelime daha sonra tekrar gelecek.", "error");
+      nextTimer = window.setTimeout(() => {
+        if (answered) nextWord();
+      }, 1400);
+      return;
+    }
     if (!saved.done.includes(wordId)) {
       saved.done.push(wordId);
       saved.coins += 5;
-      setFeedback($("feedback"), "Doğru! +5 coin. Sonraki kelimeye geçiliyor…", "success");
-    } else {
-      setFeedback($("feedback"), "Doğru! Bu kelimeyi zaten öğrenmiştin.", "success");
     }
     if (!saved.doneToday.includes(wordId)) saved.doneToday.push(wordId);
-    $("nextBtn").hidden = false;
+    studyQueue.shift();
+    $("nextBtn").textContent = "Sonraki kelime →";
+    setFeedback($("feedback"), studyQueue.length
+      ? "Doğru! +5 coin. Bu kelime artık tekrar çıkmayacak. ✅"
+      : "Doğru! +5 coin. Bu seviyedeki tüm kelimeleri bitirdin! 🎉", "success");
     persist();
     updateProgress();
     nextTimer = window.setTimeout(() => {
@@ -329,8 +357,11 @@
       }
       if (currentGameWords.length === 4) break;
     }
-    $("gameProgress").textContent = "0 / 4 eşleşme";
-    setFeedback($("gameFeedback"), "Almanca ve Türkçe kartları eşleştir.", "");
+    const gameGoal = currentGameWords.length;
+    $("gameProgress").textContent = "0 / " + gameGoal + " eşleşme";
+    setFeedback($("gameFeedback"), gameGoal
+      ? "Almanca ve Türkçe kartları eşleştir."
+      : "Bu seviyede öğrenecek yeni kelime kalmadı. Diğer seviyeyi seçebilirsin.", gameGoal ? "" : "success");
     const area = $("gameArea");
     area.replaceChildren();
     const left = document.createElement("div");
@@ -376,10 +407,10 @@
             }
           });
           gameMatchCount += 1;
-          $("gameProgress").textContent = gameMatchCount + " / 4 eşleşme";
+          $("gameProgress").textContent = gameMatchCount + " / " + gameGoal + " eşleşme";
           selectedGermanId = null;
-          setFeedback($("gameFeedback"), gameMatchCount === 4 ? "Harika! Bütün kelimeleri eşleştirdin. +10 coin 🎉" : "Doğru eşleşme! Devam et.", "success");
-          if (gameMatchCount === 4) {
+          setFeedback($("gameFeedback"), gameMatchCount === gameGoal ? "Harika! Bütün kelimeleri eşleştirdin. +10 coin 🎉" : "Doğru eşleşme! Devam et.", "success");
+          if (gameMatchCount === gameGoal && gameGoal > 0) {
             saved.coins += 10;
             persist();
             updateProgress();
@@ -405,8 +436,14 @@
     setupTabs();
     $("checkBtn").addEventListener("click", checkAnswer);
     $("nextBtn").addEventListener("click", nextWord);
-    $("speakWord").addEventListener("click", () => speakGerman(availableWords()[index].de, $("speakWord")));
-    $("speakExample").addEventListener("click", () => speakGerman(availableWords()[index].ex, $("speakExample")));
+    $("speakWord").addEventListener("click", () => {
+      const word = studyQueue.length ? words[studyQueue[0]] : null;
+      if (word) speakGerman(word.de, $("speakWord"));
+    });
+    $("speakExample").addEventListener("click", () => {
+      const word = studyQueue.length ? words[studyQueue[0]] : null;
+      if (word) speakGerman(word.ex, $("speakExample"));
+    });
     document.querySelectorAll("[data-level]").forEach(button => {
       button.addEventListener("click", () => {
         const nextLevel = button.dataset.level;
@@ -419,7 +456,7 @@
           item.classList.toggle("active", active);
           item.setAttribute("aria-pressed", active ? "true" : "false");
         });
-        index = 0;
+        resetStudyQueue();
         questionIndex = -1;
         renderWord();
         renderGrammar();
@@ -431,6 +468,7 @@
     });
     $("grammarNext").addEventListener("click", renderGrammar);
     $("startGameBtn").addEventListener("click", startGame);
+    resetStudyQueue();
     renderWord();
     renderGrammar();
     startGame();
