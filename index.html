@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101426">
   <meta name="description" content="A1 ve A2 Almanca kelime, gramer ve eşleştirme oyunu.">
   <title>Deutsch Quest | Almanca Öğren</title>
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
   <main class="app">
@@ -35,6 +35,7 @@
       <button type="button" class="tab active" data-page="learn" aria-selected="true">📚 Kelimeler</button>
       <button type="button" class="tab" data-page="grammar" aria-selected="false">📝 Gramer</button>
       <button type="button" class="tab" data-page="games" aria-selected="false">🎮 Oyunlar</button>
+      <button type="button" class="tab" data-page="profile" aria-selected="false">👤 Profil</button>
     </nav>
 
     <section class="panel level-selector" aria-label="Almanca öğrenme seviyesi">
@@ -114,8 +115,46 @@
       <button id="startGameBtn" type="button" class="button primary">Yeni oyun</button>
     </section>
 
+    <section id="profile" class="panel page" hidden>
+      <p class="eyebrow">KİŞİSEL ALANIN</p>
+      <div class="profile-hero">
+        <div id="profileAvatar" class="profile-avatar" aria-hidden="true">🦊</div>
+        <div class="profile-identity">
+          <h2 id="profileNameDisplay">Deutsch Quest öğrencisi</h2>
+          <p id="profileLevelSummary" class="muted">Aktif seviye: A1</p>
+        </div>
+      </div>
+      <form id="profileForm" class="profile-form">
+        <label for="profileNameInput">Profil adın</label>
+        <input id="profileNameInput" type="text" maxlength="24" placeholder="Adını yaz" autocomplete="nickname">
+        <label for="profileAvatarInput">Profil simgesi</label>
+        <select id="profileAvatarInput" class="profile-select">
+          <option value="🦊">🦊 Tilki</option>
+          <option value="🐼">🐼 Panda</option>
+          <option value="🐯">🐯 Kaplan</option>
+          <option value="🐸">🐸 Kurbağa</option>
+          <option value="🐱">🐱 Kedi</option>
+          <option value="🐨">🐨 Koala</option>
+        </select>
+        <button type="submit" class="button primary">Profili kaydet</button>
+        <p id="profileFeedback" class="feedback" aria-live="polite"></p>
+      </form>
+      <h3 class="profile-section-title">📊 İstatistiklerin</h3>
+      <div class="profile-stats">
+        <div class="stat-card"><span>🔥 Günlük seri</span><strong id="currentStreak">0 gün</strong></div>
+        <div class="stat-card"><span>🏆 En uzun seri</span><strong id="bestStreak">0 gün</strong></div>
+        <div class="stat-card"><span>📚 Öğrenilen kelime</span><strong id="profileWords">0</strong></div>
+        <div class="stat-card"><span>🪙 Toplam coin</span><strong id="profileCoins">0</strong></div>
+        <div class="stat-card"><span>🌞 Bugün öğrenilen</span><strong id="profileToday">0 / 10</strong></div>
+        <div class="stat-card"><span>📝 Doğru gramer</span><strong id="profileGrammar">0</strong></div>
+      </div>
+      <h3 class="profile-section-title">🎖️ Başarı rozetleri</h3>
+      <div id="badgeGrid" class="badge-grid"></div>
+      <p class="profile-note muted">Profilin ve ilerlemen bu cihazın tarayıcısında saklanır. Başka cihaza otomatik aktarılmaz.</p>
+    </section>
+
     <footer><span>Deutsch Quest</span><span>💜 Öğrenmeye devam et!</span></footer>
   </main>
-  <script src="script.js?v=7"></script>
+  <script src="script.js?v=8"></script>
 </body>
 </html>
