@@ -89,24 +89,24 @@
   ];
 
   const questions = [
-    {topic:"Sein fiili", q:"Ich ___ müde.", a:["bin","bist","sind"], c:"bin", why:"Ich bin = Ben ...im."},
-    {topic:"Sein fiili", q:"Du ___ sehr nett.", a:["ist","bist","bin"], c:"bist", why:"Du bist = Sen ...sin."},
-    {topic:"Sein fiili", q:"Gestern ___ ich krank.", a:["war","waren","bist"], c:"war", why:"Geçmişte ich ile war kullanılır."},
-    {topic:"Haben fiili", q:"Du ___ heute Zeit.", a:["habe","hat","hast"], c:"hast", why:"Du hast = Senin var."},
-    {topic:"Fiil çekimi", q:"Er ___ in Uhingen.", a:["wohne","wohnen","wohnt"], c:"wohnt", why:"Er/sie/es ile fiil genellikle -t alır."},
-    {topic:"Fiil çekimi", q:"Wir ___ Deutsch.", a:["lernt","lernen","lerne"], c:"lernen", why:"Wir lernen = Biz öğreniyoruz."},
-    {topic:"Modal fiil", q:"Ich ___ einen Kaffee trinken.", a:["möchte","möchtest","möchten"], c:"möchte", why:"Ich möchte = Ben istiyorum."},
-    {topic:"Geçmiş zaman", q:"Ich habe gestern Fußball ___.", a:["spielen","gespielt","spielst"], c:"gespielt", why:"Perfekt: haben + Partizip II (gespielt)."},
-    {topic:"Geçmiş zaman", q:"Wir ___ gestern im Park.", a:["war","waren","seid"], c:"waren", why:"Wir waren = Biz ... idik."},
-    {topic:"Edatlar", q:"Ich fahre ___ dem Bus.", a:["mit","aus","von"], c:"mit", why:"Mit dem Bus = otobüsle."},
-    {topic:"Edatlar", q:"Ich komme ___ der Türkei.", a:["mit","aus","bei"], c:"aus", why:"Aus der Türkei = Türkiye'den."},
-    {topic:"Edatlar", q:"Das Geschenk ist ___ meiner Mutter.", a:["von","mit","nach"], c:"von", why:"Von meiner Mutter = annemden."},
-    {topic:"Artikel", q:"___ Tisch ist neu.", a:["Der","Die","Das"], c:"Der", why:"Tisch kelimesi der artikeliyle kullanılır."},
-    {topic:"Artikel", q:"Ich kaufe ___ Apfel.", a:["eine","einen","einem"], c:"einen", why:"Akkusativ hâlinde der Apfel → einen Apfel."},
-    {topic:"Kelime sırası", q:"Heute ___ ich Deutsch.", a:["lerne","ich lerne","lernen"], c:"lerne", why:"Heute başta ise çekimli fiil ikinci sırada gelir."},
-    {topic:"Bağlaçlar", q:"Ich bleibe zu Hause, ___ ich krank bin.", a:["weil","aber","oder"], c:"weil", why:"Weil yan cümlesinde çekimli fiil sona gider."},
-    {topic:"Karşılaştırma", q:"Mein Bruder ist ___ als ich.", a:["groß","größer","am größten"], c:"größer", why:"Als ile karşılaştırmada größer kullanılır."},
-    {topic:"Soru cümlesi", q:"___ wohnst du?", a:["Wo","Wer","Was"], c:"Wo", why:"Wo wohnst du? = Nerede oturuyorsun?"}
+    {topic:"Sein fiili", q:"Ich ___ müde.", a:["bin","bist","sind"], c:"bin", why:"Ich bin = Ben ...im.",level:"A1"},
+    {topic:"Sein fiili", q:"Du ___ sehr nett.", a:["ist","bist","bin"], c:"bist", why:"Du bist = Sen ...sin.",level:"A1"},
+    {topic:"Sein fiili", q:"Gestern ___ ich krank.", a:["war","waren","bist"], c:"war", why:"Geçmişte ich ile war kullanılır.",level:"A2"},
+    {topic:"Haben fiili", q:"Du ___ heute Zeit.", a:["habe","hat","hast"], c:"hast", why:"Du hast = Senin var.",level:"A1"},
+    {topic:"Fiil çekimi", q:"Er ___ in Uhingen.", a:["wohne","wohnen","wohnt"], c:"wohnt", why:"Er/sie/es ile fiil genellikle -t alır.",level:"A1"},
+    {topic:"Fiil çekimi", q:"Wir ___ Deutsch.", a:["lernt","lernen","lerne"], c:"lernen", why:"Wir lernen = Biz öğreniyoruz.",level:"A1"},
+    {topic:"Modal fiil", q:"Ich ___ einen Kaffee trinken.", a:["möchte","möchtest","möchten"], c:"möchte", why:"Ich möchte = Ben istiyorum.",level:"A1"},
+    {topic:"Geçmiş zaman", q:"Ich habe gestern Fußball ___.", a:["spielen","gespielt","spielst"], c:"gespielt", why:"Perfekt: haben + Partizip II (gespielt).",level:"A2"},
+    {topic:"Geçmiş zaman", q:"Wir ___ gestern im Park.", a:["war","waren","seid"], c:"waren", why:"Wir waren = Biz ... idik.",level:"A2"},
+    {topic:"Edatlar", q:"Ich fahre ___ dem Bus.", a:["mit","aus","von"], c:"mit", why:"Mit dem Bus = otobüsle.",level:"A1"},
+    {topic:"Edatlar", q:"Ich komme ___ der Türkei.", a:["mit","aus","bei"], c:"aus", why:"Aus der Türkei = Türkiye'den.",level:"A1"},
+    {topic:"Edatlar", q:"Das Geschenk ist ___ meiner Mutter.", a:["von","mit","nach"], c:"von", why:"Von meiner Mutter = annemden.",level:"A1"},
+    {topic:"Artikel", q:"___ Tisch ist neu.", a:["Der","Die","Das"], c:"Der", why:"Tisch kelimesi der artikeliyle kullanılır.",level:"A1"},
+    {topic:"Artikel", q:"Ich kaufe ___ Apfel.", a:["eine","einen","einem"], c:"einen", why:"Akkusativ hâlinde der Apfel → einen Apfel.",level:"A2"},
+    {topic:"Kelime sırası", q:"Heute ___ ich Deutsch.", a:["lerne","ich lerne","lernen"], c:"lerne", why:"Heute başta ise çekimli fiil ikinci sırada gelir.",level:"A1"},
+    {topic:"Bağlaçlar", q:"Ich bleibe zu Hause, ___ ich krank bin.", a:["weil","aber","oder"], c:"weil", why:"Weil yan cümlesinde çekimli fiil sona gider.",level:"A2"},
+    {topic:"Karşılaştırma", q:"Mein Bruder ist ___ als ich.", a:["groß","größer","am größten"], c:"größer", why:"Als ile karşılaştırmada größer kullanılır.",level:"A2"},
+    {topic:"Soru cümlesi", q:"___ wohnst du?", a:["Wo","Wer","Was"], c:"Wo", why:"Wo wohnst du? = Nerede oturuyorsun?",level:"A1"}
   ];
 
   const $ = id => document.getElementById(id);
@@ -122,13 +122,16 @@
         coins: Number.isFinite(data.coins) ? data.coins : 0,
         done: Array.isArray(data.done) ? data.done : [],
         date: data.date === dateKey() ? data.date : dateKey(),
-        doneToday: data.date === dateKey() && Array.isArray(data.doneToday) ? data.doneToday : []
+        doneToday: data.date === dateKey() && Array.isArray(data.doneToday) ? data.doneToday : [],
+        level: data.level === "A2" ? "A2" : "A1"
       };
     } catch (e) {
-      return {coins:0, done:[], date:dateKey(), doneToday:[]};
+      return {coins:0, done:[], date:dateKey(), doneToday:[], level:"A1"};
     }
   }
   const saved = readSave();
+  let selectedLevel = saved.level === "A2" ? "A2" : "A1";
+  saved.level = selectedLevel;
   let index = 0;
   let answered = false;
   let nextTimer = null;
@@ -187,14 +190,19 @@
     window.speechSynthesis.speak(utterance);
   }
 
+  function availableWords() {
+    return words.filter(word => word.level === selectedLevel);
+  }
   function renderWord() {
     if (nextTimer !== null) window.clearTimeout(nextTimer);
     nextTimer = null;
-    const word = words[index];
+    const levelWords = availableWords();
+    if (index >= levelWords.length) index = 0;
+    const word = levelWords[index];
     answered = false;
     $("word").textContent = word.de;
     $("example").textContent = word.ex;
-    $("counter").textContent = "Kelime " + (index + 1) + " / " + words.length;
+    $("counter").textContent = "Kelime " + (index + 1) + " / " + levelWords.length;
     $("levelTag").textContent = word.level;
     $("answer").value = "";
     $("answer").disabled = false;
@@ -206,13 +214,14 @@
   function nextWord() {
     if (nextTimer !== null) window.clearTimeout(nextTimer);
     nextTimer = null;
-    index = (index + 1) % words.length;
+    index = (index + 1) % availableWords().length;
     renderWord();
     $("answer").focus();
   }
   function checkAnswer() {
     if (answered) return;
-    const word = words[index];
+    const word = availableWords()[index];
+    const wordId = words.indexOf(word);
     const given = normalize($("answer").value);
     if (!given) {
       setFeedback($("feedback"), "Önce Türkçe anlamını yaz.", "error");
@@ -227,14 +236,14 @@
     answered = true;
     $("checkBtn").disabled = true;
     $("answer").disabled = true;
-    if (!saved.done.includes(index)) {
-      saved.done.push(index);
+    if (!saved.done.includes(wordId)) {
+      saved.done.push(wordId);
       saved.coins += 5;
       setFeedback($("feedback"), "Doğru! +5 coin. Sonraki kelimeye geçiliyor…", "success");
     } else {
       setFeedback($("feedback"), "Doğru! Bu kelimeyi zaten öğrenmiştin.", "success");
     }
-    if (!saved.doneToday.includes(index)) saved.doneToday.push(index);
+    if (!saved.doneToday.includes(wordId)) saved.doneToday.push(wordId);
     $("nextBtn").hidden = false;
     persist();
     updateProgress();
@@ -257,9 +266,13 @@
       });
     });
   }
+  function availableQuestions() {
+    return questions.filter(question => question.level === selectedLevel);
+  }
   function renderGrammar() {
-    questionIndex = (questionIndex + 1) % questions.length;
-    const q = questions[questionIndex];
+    const levelQuestions = availableQuestions();
+    questionIndex = (questionIndex + 1) % levelQuestions.length;
+    const q = levelQuestions[questionIndex];
     questionLocked = false;
     $("grammarTopic").textContent = q.topic;
     $("grammarPrompt").textContent = q.q;
@@ -307,7 +320,7 @@
     gameMatchCount = 0;
     const used = new Set();
     currentGameWords = [];
-    const candidates = shuffle(words);
+    const candidates = shuffle(availableWords());
     for (const word of candidates) {
       const id = words.indexOf(word);
       if (!used.has(id) && !currentGameWords.some(item => normalize(item.tr[0]) === normalize(word.tr[0]))) {
@@ -384,11 +397,35 @@
     $("startGameBtn").textContent = "Oyunu yeniden başlat";
   }
   document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("[data-level]").forEach(button => {
+      const active = button.dataset.level === selectedLevel;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
     setupTabs();
     $("checkBtn").addEventListener("click", checkAnswer);
     $("nextBtn").addEventListener("click", nextWord);
-    $("speakWord").addEventListener("click", () => speakGerman(words[index].de, $("speakWord")));
-    $("speakExample").addEventListener("click", () => speakGerman(words[index].ex, $("speakExample")));
+    $("speakWord").addEventListener("click", () => speakGerman(availableWords()[index].de, $("speakWord")));
+    $("speakExample").addEventListener("click", () => speakGerman(availableWords()[index].ex, $("speakExample")));
+    document.querySelectorAll("[data-level]").forEach(button => {
+      button.addEventListener("click", () => {
+        const nextLevel = button.dataset.level;
+        if (nextLevel === selectedLevel) return;
+        selectedLevel = nextLevel;
+        saved.level = selectedLevel;
+        persist();
+        document.querySelectorAll("[data-level]").forEach(item => {
+          const active = item.dataset.level === selectedLevel;
+          item.classList.toggle("active", active);
+          item.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        index = 0;
+        questionIndex = -1;
+        renderWord();
+        renderGrammar();
+        startGame();
+      });
+    });
     $("answer").addEventListener("keydown", event => {
       if (event.key === "Enter") checkAnswer();
     });
