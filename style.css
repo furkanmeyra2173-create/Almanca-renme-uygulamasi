@@ -185,3 +185,55 @@ body { padding-bottom:calc(108px + env(safe-area-inset-bottom)); }
   .bottom-tabs .tab { min-height:53px; font-size:10px; }
   .tab-icon { font-size:18px; }
 }
+
+/* Welcome screen, first-entry level choice and provider buttons */
+.welcome-screen { min-height:100vh; min-height:100svh; display:flex; align-items:center; justify-content:center; padding:22px 14px calc(30px + env(safe-area-inset-bottom)); }
+.welcome-card { width:100%; max-width:480px; padding:25px 21px; border:1px solid var(--border); border-radius:25px; background:rgba(27,32,55,.98); box-shadow:0 20px 60px #0007; }
+.welcome-brand { display:flex; align-items:center; gap:12px; margin-bottom:25px; }
+.welcome-logo { display:grid; place-items:center; width:57px; height:57px; border-radius:18px; background:#332d5d; font-size:31px; }
+.welcome-brand h1 { margin:0; font-size:29px; }
+.welcome-brand .subtitle { margin-top:5px; }
+.welcome-card h2 { margin:7px 0 8px; font-size:25px; }
+.welcome-description { margin:0 0 18px; color:#c5c9df; font-size:14px; }
+.entry-level-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.entry-level-btn { display:flex; flex-direction:column; align-items:flex-start; gap:4px; min-width:0; min-height:117px; padding:13px; border:1px solid var(--border); border-radius:15px; background:#151a30; color:var(--muted); text-align:left; }
+.entry-level-btn strong { color:var(--text); font-size:25px; }
+.entry-level-btn span { color:var(--text); font-size:13px; font-weight:800; }
+.entry-level-btn small { font-size:11px; line-height:1.35; }
+.entry-level-btn.active { border-color:var(--purple); background:#332d5d; box-shadow:inset 0 0 0 1px var(--purple); color:#e3deff; }
+.auth-section-title { display:flex; align-items:center; gap:9px; margin:12px 0 13px; color:var(--muted); }
+.auth-section-title span { flex:1; height:1px; background:var(--border); }
+.auth-section-title small { font-size:10px; font-weight:800; letter-spacing:.6px; white-space:nowrap; }
+.auth-methods { display:grid; gap:9px; }
+.auth-method { display:flex; align-items:center; justify-content:center; gap:11px; min-height:48px; padding:10px 14px; border:1px solid #454c6d; border-radius:12px; background:#f8f8fc; color:#202238; font-size:14px; font-weight:800; }
+.auth-method:active { transform:scale(.99); }
+.facebook-method { border-color:#345caa; background:#2458a6; color:white; }
+.email-method { border-color:var(--border); background:#252b46; color:white; }
+.provider-mark { display:grid; place-items:center; flex:0 0 23px; width:23px; height:23px; border-radius:50%; font-weight:900; }
+.google-mark { background:white; color:#4285f4; font-size:18px; }
+.facebook-mark { background:white; color:#2458a6; font-family:Arial,sans-serif; font-size:22px; }
+.email-mark { font-size:18px; }
+.email-auth-form { margin-top:14px; padding:15px; border:1px solid var(--border); border-radius:15px; background:#151a30; }
+.email-auth-form input { margin-bottom:12px; }
+.email-auth-form .button { margin-top:3px; }
+.text-button { display:block; width:100%; margin-top:12px; padding:8px; border:0; background:transparent; color:var(--purple-light); font-size:13px; font-weight:750; }
+.auth-divider { display:flex; align-items:center; gap:10px; margin:18px 0 12px; color:var(--muted); font-size:12px; }
+.auth-divider::before,.auth-divider::after { content:""; flex:1; height:1px; background:var(--border); }
+.guest-button { border:1px solid #514a82; background:#332d5d; color:white; }
+.account-continue { margin-top:13px; }
+.auth-message { margin:11px 0 0; font-size:13px; font-weight:650; }
+.auth-message:empty { display:none; }
+.auth-message.error { color:var(--red); }
+.auth-message.success { color:var(--green); }
+.auth-setup-note { margin:13px 0 0; padding:10px 12px; border:1px solid #514a42; border-radius:10px; background:#2b2730; color:#e4c99c; font-size:11px; line-height:1.45; }
+.welcome-privacy { margin:12px 0 0; color:var(--muted); font-size:11px; line-height:1.45; text-align:center; }
+.profile-level-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:11px; }
+.account-session { margin-top:22px; padding:15px; border:1px solid var(--border); border-radius:14px; background:#151a30; }
+.account-session .muted { overflow-wrap:anywhere; }
+.account-session .button { margin-top:5px; }
+@media (max-width:370px) {
+  .welcome-card { padding:21px 16px; border-radius:21px; }
+  .welcome-brand h1 { font-size:26px; }
+  .welcome-card h2 { font-size:22px; }
+  .entry-level-btn { padding:11px; min-height:112px; }
+}
