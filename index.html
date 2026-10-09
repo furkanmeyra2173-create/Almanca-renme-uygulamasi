@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101426">
   <meta name="description" content="A1 ve A2 Almanca kelime, gramer ve eşleştirme oyunu.">
   <title>Deutsch Quest | Almanca Öğren</title>
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <main class="app">
@@ -45,8 +45,14 @@
       <div class="word-meta"><span id="counter" class="muted">Kelime 1</span><span id="knownCount" class="muted">0 öğrenildi</span></div>
       <div class="word-card">
         <p class="muted">Almanca kelime</p>
-        <h2 id="word">Hallo</h2>
-        <p id="example" class="example">Hallo! Wie geht es dir?</p>
+        <div class="word-title-line">
+          <h2 id="word">Hallo</h2>
+          <button id="speakWord" type="button" class="speak-button" aria-label="Almanca kelimeyi dinle" title="Kelimeyi dinle">🔊</button>
+        </div>
+        <div class="example-line">
+          <p id="example" class="example">Hallo! Wie geht es dir?</p>
+          <button id="speakExample" type="button" class="speak-button speak-small" aria-label="Örnek cümleyi dinle" title="Örnek cümleyi dinle">🔊</button>
+        </div>
       </div>
       <div class="answer-area">
         <label for="answer">Türkçe anlamı nedir?</label>
@@ -98,6 +104,6 @@
 
     <footer><span>Deutsch Quest</span><span>💜 Öğrenmeye devam et!</span></footer>
   </main>
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>
