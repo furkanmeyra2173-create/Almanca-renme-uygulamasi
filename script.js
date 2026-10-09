@@ -129,10 +129,12 @@
         streak: Number.isFinite(data.streak) ? Math.max(0, data.streak) : 0,
         bestStreak: Number.isFinite(data.bestStreak) ? Math.max(0, data.bestStreak) : 0,
         lastStudyDate: typeof data.lastStudyDate === "string" ? data.lastStudyDate : "",
-        grammarCorrect: Number.isFinite(data.grammarCorrect) ? Math.max(0, data.grammarCorrect) : 0
+        grammarCorrect: Number.isFinite(data.grammarCorrect) ? Math.max(0, data.grammarCorrect) : 0,
+        welcomeDone: data.welcomeDone === true,
+        authMode: typeof data.authMode === "string" ? data.authMode : ""
       };
     } catch (e) {
-      return {coins:0, done:[], date:dateKey(), doneToday:[], level:"A1", name:"", avatar:"🦊", streak:0, bestStreak:0, lastStudyDate:"", grammarCorrect:0};
+      return {coins:0, done:[], date:dateKey(), doneToday:[], level:"A1", name:"", avatar:"🦊", streak:0, bestStreak:0, lastStudyDate:"", grammarCorrect:0, welcomeDone:false, authMode:""};
     }
   }
   const saved = readSave();
@@ -148,9 +150,203 @@
   let selectedGermanId = null;
   let gameMatchCount = 0;
   let currentGameWords = [];
+  let firebaseAuth = null;
+  let activeAuthUser = null;
+  let emailAuthMode = "signin";
+  const AUTH_PENDING_KEY = "deutschQuestAuthPending";
 
   function persist() {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(saved)); } catch (e) {}
+  }
+  function updateLevelControls() {
+    document.querySelectorAll("[data-entry-level]").forEach(button => {
+      const active = button.dataset.entryLevel === selectedLevel;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+    document.querySelectorAll("[data-profile-level]").forEach(button => {
+      const active = button.dataset.profileLevel === selectedLevel;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+  function changeLevel(nextLevel) {
+    selectedLevel = nextLevel === "A2" ? "A2" : "A1";
+    saved.level = selectedLevel;
+    persist();
+    updateLevelControls();
+    resetStudyQueue();
+    questionIndex = -1;
+    renderWord();
+    renderGrammar();
+    startGame();
+    renderProfile();
+  }
+  function setAuthMessage(message, kind) {
+    const messageEl = $("authMessage");
+    if (!messageEl) return;
+    messageEl.textContent = message || "";
+    messageEl.classList.remove("success", "error");
+    if (kind) messageEl.classList.add(kind);
+  }
+  function setEmailAuthMode(mode) {
+    emailAuthMode = mode === "signup" ? "signup" : "signin";
+    $("emailSubmitBtn").textContent = emailAuthMode === "signup" ? "Hesap oluştur" : "Giriş yap";
+    $("passwordInput").autocomplete = emailAuthMode === "signup" ? "new-password" : "current-password";
+    $("emailModeToggle").textContent = emailAuthMode === "signup"
+      ? "Zaten hesabın var mı? Giriş yap"
+      : "Yeni misin? Hesap oluştur";
+    setAuthMessage("", "");
+  }
+  function firebaseConfigurationReady() {
+    const config = window.DEUTSCH_QUEST_FIREBASE_CONFIG;
+    return !!(window.firebase && config && config.apiKey && config.projectId && config.appId &&
+      config.apiKey !== "PASTE_API_KEY_HERE" && config.projectId !== "YOUR_PROJECT_ID" &&
+      config.appId !== "PASTE_APP_ID_HERE");
+  }
+  function authErrorText(error) {
+    const code = error && error.code ? error.code : "";
+    const messages = {
+      "auth/invalid-email":"E-posta adresini kontrol et.",
+      "auth/invalid-credential":"E-posta veya şifre yanlış.",
+      "auth/wrong-password":"Şifre yanlış.",
+      "auth/user-not-found":"Bu e-posta ile hesap bulunamadı.",
+      "auth/email-already-in-use":"Bu e-posta zaten kayıtlı. Giriş yapmayı dene.",
+      "auth/weak-password":"Şifre en az 6 karakter olmalı.",
+      "auth/operation-not-allowed":"Bu giriş yöntemi Firebase ayarlarında henüz açılmamış.",
+      "auth/unauthorized-domain":"Uygulamanın GitHub Pages adresi Firebase yetkili alanlarına eklenmeli.",
+      "auth/account-exists-with-different-credential":"Bu e-posta başka bir giriş yöntemiyle kayıtlı.",
+      "auth/network-request-failed":"Bağlantı başarısız. İnternetini kontrol et."
+    };
+    return messages[code] || "Giriş tamamlanamadı. Firebase ayarlarını ve bilgilerini kontrol et.";
+  }
+  function enterApp(user) {
+    activeAuthUser = user || null;
+    saved.welcomeDone = true;
+    if (user) {
+      saved.authMode = "firebase";
+      if (!saved.name && user.displayName) saved.name = user.displayName.slice(0, 24);
+    } else {
+      saved.authMode = "guest";
+    }
+    persist();
+    $("welcomeScreen").hidden = true;
+    $("appShell").hidden = false;
+    updateLevelControls();
+    updateProgress();
+    renderProfile();
+  }
+  async function enterAsGuest() {
+    try {
+      if (firebaseAuth && firebaseAuth.currentUser) await firebaseAuth.signOut();
+    } catch (error) {}
+    localStorage.removeItem(AUTH_PENDING_KEY);
+    enterApp(null);
+  }
+  async function signInWithProvider(providerName) {
+    if (!firebaseConfigurationReady() || !firebaseAuth) {
+      setAuthMessage("Bu giriş yöntemini açmak için Firebase bağlantısı kurulmalı. Şimdilik misafir olarak devam edebilirsin.", "error");
+      return;
+    }
+    localStorage.setItem(AUTH_PENDING_KEY, "1");
+    try {
+      const provider = providerName === "google"
+        ? new firebase.auth.GoogleAuthProvider()
+        : new firebase.auth.FacebookAuthProvider();
+      firebaseAuth.useDeviceLanguage();
+      await firebaseAuth.signInWithRedirect(provider);
+    } catch (error) {
+      localStorage.removeItem(AUTH_PENDING_KEY);
+      setAuthMessage(authErrorText(error), "error");
+    }
+  }
+  function initWelcomeAndAuth() {
+    updateLevelControls();
+    $("appShell").hidden = true;
+    $("welcomeScreen").hidden = false;
+    document.querySelectorAll("[data-entry-level]").forEach(button => {
+      button.addEventListener("click", () => changeLevel(button.dataset.entryLevel));
+    });
+    document.querySelectorAll("[data-profile-level]").forEach(button => {
+      button.addEventListener("click", () => changeLevel(button.dataset.profileLevel));
+    });
+    $("emailChoiceBtn").addEventListener("click", () => {
+      $("emailAuthForm").hidden = !$("emailAuthForm").hidden;
+      if (!$("emailAuthForm").hidden) $("emailInput").focus();
+      setAuthMessage("", "");
+    });
+    $("emailModeToggle").addEventListener("click", () => {
+      setEmailAuthMode(emailAuthMode === "signin" ? "signup" : "signin");
+    });
+    $("emailAuthForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!firebaseConfigurationReady() || !firebaseAuth) {
+        setAuthMessage("E-posta girişi için önce Firebase ayarları tamamlanmalı. Şimdilik misafir girişi çalışıyor.", "error");
+        return;
+      }
+      const email = $("emailInput").value.trim();
+      const password = $("passwordInput").value;
+      localStorage.setItem(AUTH_PENDING_KEY, "1");
+      $("emailSubmitBtn").disabled = true;
+      try {
+        const result = emailAuthMode === "signup"
+          ? await firebaseAuth.createUserWithEmailAndPassword(email, password)
+          : await firebaseAuth.signInWithEmailAndPassword(email, password);
+        localStorage.removeItem(AUTH_PENDING_KEY);
+        enterApp(result.user);
+      } catch (error) {
+        localStorage.removeItem(AUTH_PENDING_KEY);
+        setAuthMessage(authErrorText(error), "error");
+      } finally {
+        $("emailSubmitBtn").disabled = false;
+      }
+    });
+    $("googleLoginBtn").addEventListener("click", () => signInWithProvider("google"));
+    $("facebookLoginBtn").addEventListener("click", () => signInWithProvider("facebook"));
+    $("guestBtn").addEventListener("click", () => enterAsGuest());
+    $("accountContinueBtn").addEventListener("click", () => {
+      if (firebaseAuth && firebaseAuth.currentUser) enterApp(firebaseAuth.currentUser);
+      else enterAsGuest();
+    });
+    $("logoutBtn").addEventListener("click", async () => {
+      try {
+        if (firebaseAuth && firebaseAuth.currentUser) await firebaseAuth.signOut();
+      } catch (error) {}
+      saved.welcomeDone = false;
+      saved.authMode = "";
+      persist();
+      window.location.reload();
+    });
+
+    if (saved.welcomeDone && saved.authMode === "guest") enterApp(null);
+    if (!firebaseConfigurationReady()) {
+      $("authSetupNote").hidden = false;
+      setAuthMessage("Şimdilik misafir olarak devam edebilirsin; e-posta, Google ve Facebook için Firebase bağlantısı gerekiyor.", "");
+    } else {
+      $("authSetupNote").hidden = true;
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(window.DEUTSCH_QUEST_FIREBASE_CONFIG);
+        firebaseAuth = firebase.auth();
+        firebaseAuth.useDeviceLanguage();
+        firebaseAuth.getRedirectResult().catch(error => {
+          localStorage.removeItem(AUTH_PENDING_KEY);
+          setAuthMessage(authErrorText(error), "error");
+        });
+        firebaseAuth.onAuthStateChanged(user => {
+          activeAuthUser = user || null;
+          if (user && (saved.welcomeDone || localStorage.getItem(AUTH_PENDING_KEY) === "1")) {
+            localStorage.removeItem(AUTH_PENDING_KEY);
+            enterApp(user);
+          } else if (user) {
+            $("accountContinueBtn").hidden = false;
+            setAuthMessage("Hesabın açık. Seviyeni seçip devam edebilirsin.", "success");
+          }
+          renderProfile();
+        });
+      } catch (error) {
+        setAuthMessage("Giriş bağlantısı başlatılamadı. Firebase yapılandırmasını kontrol et.", "error");
+      }
+    }
   }
   function recordStudyActivity() {
     const today = dateKey();
@@ -193,6 +389,12 @@
     $("profileNameDisplay").textContent = saved.name.trim() || "Deutsch Quest öğrencisi";
     $("profileAvatar").textContent = saved.avatar || "🦊";
     $("profileLevelSummary").textContent = "Aktif seviye: " + selectedLevel;
+    if ($("accountStatus")) {
+      $("accountStatus").textContent = activeAuthUser
+        ? "Giriş yapıldı: " + (activeAuthUser.email || activeAuthUser.displayName || "hesap") + ". İlerleme bu cihazda saklanıyor."
+        : "Misafir hesap. İlerleme bu cihazda saklanıyor.";
+    }
+    if ($("logoutBtn")) $("logoutBtn").textContent = activeAuthUser ? "Oturumu kapat" : "Giriş ekranına dön";
     $("currentStreak").textContent = saved.streak + " gün";
     $("bestStreak").textContent = saved.bestStreak + " gün";
     $("profileWords").textContent = String(saved.done.length);
@@ -513,25 +715,7 @@
       const word = studyQueue.length ? words[studyQueue[0]] : null;
       if (word) speakGerman(word.ex, $("speakExample"));
     });
-    document.querySelectorAll("[data-level]").forEach(button => {
-      button.addEventListener("click", () => {
-        const nextLevel = button.dataset.level;
-        if (nextLevel === selectedLevel) return;
-        selectedLevel = nextLevel;
-        saved.level = selectedLevel;
-        persist();
-        document.querySelectorAll("[data-level]").forEach(item => {
-          const active = item.dataset.level === selectedLevel;
-          item.classList.toggle("active", active);
-          item.setAttribute("aria-pressed", active ? "true" : "false");
-        });
-        resetStudyQueue();
-        questionIndex = -1;
-        renderWord();
-        renderGrammar();
-        startGame();
-      });
-    });
+    updateLevelControls();
     $("answer").addEventListener("keydown", event => {
       if (event.key === "Enter") checkAnswer();
     });
@@ -551,5 +735,6 @@
     renderWord();
     renderGrammar();
     startGame();
+    initWelcomeAndAuth();
   });
 })();
