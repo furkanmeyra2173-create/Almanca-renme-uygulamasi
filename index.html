@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101426">
+  <meta name="description" content="Türkçe açıklamalarla Almanca kelime ve gramer öğren.">
+  <title>Deutsch Quest</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div>
+        <p class="small">ALMANCA ÖĞRENME PLATFORMU</p>
+        <h1>Deutsch Quest</h1>
+      </div>
+      <div class="coin-box">
+        <span class="coin-label">COIN</span>
+        <strong id="coins">0</strong>
+      </div>
+    </header>
+
+    <section class="panel progress-panel">
+      <div class="progress-label">
+        <div>
+          <p class="small">GÜNLÜK HEDEF</p>
+          <strong id="progressText">0 / 25 kelime</strong>
+        </div>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="track">
+        <div id="progressBar"></div>
+      </div>
+      <p class="muted">Her doğru yeni kelime için 5 coin kazan.</p>
+    </section>
+
+    <nav class="tabs" aria-label="Ana menü">
+      <button class="tab active" data-page="learn">Kelimeler</button>
+      <button class="tab" data-page="grammar">Gramer</button>
+      <button class="tab" data-page="games">Oyunlar</button>
+    </nav>
+
+    <section id="learn" class="panel page">
+      <p class="small">KELİME ÇALIŞMASI</p>
+      <div class="word-meta">
+        <span id="levelTag" class="tag">A1 SEVİYESİ</span>
+        <span id="counter" class="muted">Kelime 1</span>
+      </div>
+
+      <h2 id="word">Hallo</h2>
+      <p id="example" class="example">Hallo! Wie geht es dir?</p>
+
+      <div class="answer-area">
+        <label for="answer">Bu kelimenin Türkçe anlamı nedir?</label>
+        <input
+          id="answer"
+          type="text"
+          placeholder="Türkçe anlamını yaz"
+          autocomplete="off"
+        >
+        <button id="checkBtn" class="primary">Cevabı kontrol et</button>
+        <p id="feedback" aria-live="polite"></p>
+        <button id="nextBtn" class="secondary" hidden>
+          Sonraki kelime
+        </button>
+      </div>
+    </section>
+
+    <section id="grammar" class="panel page" hidden>
+      <p class="small">A1 GRAMER DERSİ</p>
+      <h2>Sein fiili</h2>
+      <p>Almancada sein, Türkçedeki "olmak" fiilidir.</p>
+
+      <div class="lesson-list">
+        <div><strong>Ich bin</strong><span>Ben ...im</span></div>
+        <div><strong>Du bist</strong><span>Sen ...sin</span></div>
+        <div><strong>Er / Sie ist</strong><span>O ...</span></div>
+        <div><strong>Wir sind</strong><span>Biz ...iz</span></div>
+        <div><strong>Ihr seid</strong><span>Siz ...siniz</span></div>
+        <div><strong>Sie sind</strong><span>Onlar / Siz ...siniz</span></div>
+      </div>
+
+      <div class="example-box">
+        <p class="small">ÖRNEK CÜMLE</p>
+        <strong>Ich bin müde.</strong>
+        <p>Ben yorgunum.</p>
+      </div>
+
+      <h3>Mini test</h3>
+      <p>"Ich ___ müde."</p>
+      <div class="quiz-options">
+        <button class="quiz-option" data-answer="bist">bist</button>
+        <button class="quiz-option" data-answer="bin">bin</button>
+        <button class="quiz-option" data-answer="sind">sind</button>
+      </div>
+      <p id="grammarFeedback" aria-live="polite"></p>
+    </section>
+
+    <section id="games" class="panel page" hidden>
+      <p class="small">ÖĞRENME MOLASI</p>
+      <h2>Kelime eşleştirme</h2>
+      <p class="muted">
+        Almanca kelimelerle Türkçe anlamlarını eşleştirerek
+        öğrendiklerini tekrar et.
+      </p>
+
+      <div id="gameArea">
+        <p>Oyuna başlamak için aşağıdaki düğmeye bas.</p>
+        <button id="startGameBtn" class="primary">Oyunu başlat</button>
+      </div>
+      <p id="gameFeedback" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      <span>Deutsch Quest</span>
+      <span>Her gün bir adım ileri.</span>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
