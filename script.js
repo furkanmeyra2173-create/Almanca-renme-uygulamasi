@@ -162,6 +162,31 @@
     $("progressBar").style.width = pct + "%";
     $("knownCount").textContent = saved.done.length + " öğrenildi";
   }
+  function speakGerman(text, button) {
+    if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+      setFeedback($("feedback"), "Bu tarayıcı sesli okumayı desteklemiyor. Chrome ile tekrar dene.", "error");
+      return;
+    }
+    const phrase = String(text || "").trim();
+    if (!phrase) return;
+    window.speechSynthesis.cancel();
+    document.querySelectorAll(".speak-button").forEach(b => b.classList.remove("speaking"));
+    const utterance = new SpeechSynthesisUtterance(phrase);
+    utterance.lang = "de-DE";
+    utterance.rate = 0.82;
+    const voices = window.speechSynthesis.getVoices();
+    const germanVoice = voices.find(voice => /^de(-|_)/i.test(voice.lang) && /de-DE/i.test(voice.lang))
+      || voices.find(voice => /^de(-|_)/i.test(voice.lang));
+    if (germanVoice) utterance.voice = germanVoice;
+    if (button) button.classList.add("speaking");
+    utterance.onend = () => { if (button) button.classList.remove("speaking"); };
+    utterance.onerror = () => {
+      if (button) button.classList.remove("speaking");
+      setFeedback($("feedback"), "Ses açılamadı. Telefon ayarlarından Almanca metin okuma sesini yüklemeyi dene.", "error");
+    };
+    window.speechSynthesis.speak(utterance);
+  }
+
   function renderWord() {
     if (nextTimer !== null) window.clearTimeout(nextTimer);
     nextTimer = null;
@@ -362,6 +387,8 @@
     setupTabs();
     $("checkBtn").addEventListener("click", checkAnswer);
     $("nextBtn").addEventListener("click", nextWord);
+    $("speakWord").addEventListener("click", () => speakGerman(words[index].de, $("speakWord")));
+    $("speakExample").addEventListener("click", () => speakGerman(words[index].ex, $("speakExample")));
     $("answer").addEventListener("keydown", event => {
       if (event.key === "Enter") checkAnswer();
     });
