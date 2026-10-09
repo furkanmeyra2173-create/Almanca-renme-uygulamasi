@@ -744,9 +744,10 @@ function checkAnswer(){
   const wordIndex = index % wordsFinal.length;
   if (!saved.done.includes(wordIndex)) { saved.done.push(wordIndex); saved.coins += 5; }
   if (!saved.doneToday.includes(wordIndex)) { saved.doneToday.push(wordIndex); saved.learned += 1; }
-  if (feedback) feedback.textContent = 'Doğru! +5 coin. Sonraki kelimeye geçmek için aşağıya bas.';
+  if (feedback) feedback.textContent = 'Doğru! +5 coin. Sonraki kelimeye geçiliyor…';
   const next = $('nextWord') || $('nextBtn'); if (next) next.hidden = false;
   save(); updateProgress();
+  window.setTimeout(() => { if (answered) nextWord(); }, 900);
 }
 function nextWord(){ index = (index + 1) % wordsFinal.length; renderWord(); }
 function startGame(){
