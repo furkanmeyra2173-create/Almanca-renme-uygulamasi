@@ -123,10 +123,16 @@
         done: Array.isArray(data.done) ? data.done : [],
         date: data.date === dateKey() ? data.date : dateKey(),
         doneToday: data.date === dateKey() && Array.isArray(data.doneToday) ? data.doneToday : [],
-        level: data.level === "A2" ? "A2" : "A1"
+        level: data.level === "A2" ? "A2" : "A1",
+        name: typeof data.name === "string" ? data.name.slice(0, 24) : "",
+        avatar: ["🦊","🐼","🐯","🐸","🐱","🐨"].includes(data.avatar) ? data.avatar : "🦊",
+        streak: Number.isFinite(data.streak) ? Math.max(0, data.streak) : 0,
+        bestStreak: Number.isFinite(data.bestStreak) ? Math.max(0, data.bestStreak) : 0,
+        lastStudyDate: typeof data.lastStudyDate === "string" ? data.lastStudyDate : "",
+        grammarCorrect: Number.isFinite(data.grammarCorrect) ? Math.max(0, data.grammarCorrect) : 0
       };
     } catch (e) {
-      return {coins:0, done:[], date:dateKey(), doneToday:[], level:"A1"};
+      return {coins:0, done:[], date:dateKey(), doneToday:[], level:"A1", name:"", avatar:"🦊", streak:0, bestStreak:0, lastStudyDate:"", grammarCorrect:0};
     }
   }
   const saved = readSave();
@@ -137,7 +143,7 @@
   let nextTimer = null;
   let questionIndex = -1;
   let questionLocked = false;
-  let grammarCorrect = 0;
+  let grammarCorrect = Number.isFinite(saved.grammarCorrect) ? saved.grammarCorrect : 0;
   let roundId = 0;
   let selectedGermanId = null;
   let gameMatchCount = 0;
@@ -145,6 +151,22 @@
 
   function persist() {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(saved)); } catch (e) {}
+  }
+  function recordStudyActivity() {
+    const today = dateKey();
+    if (saved.date !== today) {
+      saved.date = today;
+      saved.doneToday = [];
+    }
+    if (saved.lastStudyDate === today) return;
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayKey = yesterday.getFullYear() + "-" +
+      String(yesterday.getMonth() + 1).padStart(2, "0") + "-" +
+      String(yesterday.getDate()).padStart(2, "0");
+    saved.streak = saved.lastStudyDate === yesterdayKey ? saved.streak + 1 : 1;
+    saved.bestStreak = Math.max(saved.bestStreak, saved.streak);
+    saved.lastStudyDate = today;
   }
   function normalize(value) {
     return String(value || "").trim().toLocaleLowerCase("tr-TR")
@@ -164,6 +186,47 @@
     $("progressPercent").textContent = pct + "%";
     $("progressBar").style.width = pct + "%";
     $("knownCount").textContent = saved.done.length + " öğrenildi";
+    renderProfile();
+  }
+  function renderProfile() {
+    if (!$("profileNameDisplay")) return;
+    $("profileNameDisplay").textContent = saved.name.trim() || "Deutsch Quest öğrencisi";
+    $("profileAvatar").textContent = saved.avatar || "🦊";
+    $("profileLevelSummary").textContent = "Aktif seviye: " + selectedLevel;
+    $("currentStreak").textContent = saved.streak + " gün";
+    $("bestStreak").textContent = saved.bestStreak + " gün";
+    $("profileWords").textContent = String(saved.done.length);
+    $("profileCoins").textContent = String(saved.coins);
+    $("profileToday").textContent = saved.doneToday.length + " / 10";
+    $("profileGrammar").textContent = String(saved.grammarCorrect || 0);
+    const idsFor = level => words.map((word, id) => word.level === level ? id : -1).filter(id => id >= 0);
+    const allA1 = idsFor("A1").every(id => saved.done.includes(id));
+    const allA2 = idsFor("A2").every(id => saved.done.includes(id));
+    const badges = [
+      {icon:"🐣",title:"İlk kelime",detail:"İlk kelimeni öğrendin",earned:saved.done.length >= 1},
+      {icon:"📚",title:"10 kelime",detail:"10 kelimeyi tamamla",earned:saved.done.length >= 10},
+      {icon:"🎓",title:"25 kelime",detail:"25 kelimeyi tamamla",earned:saved.done.length >= 25},
+      {icon:"🔥",title:"3 günlük seri",detail:"Üç gün üst üste çalış",earned:saved.streak >= 3},
+      {icon:"🏆",title:"7 günlük seri",detail:"Bir hafta seri yap",earned:saved.streak >= 7},
+      {icon:"🌞",title:"Günlük hedef",detail:"Bir günde 10 kelime öğren",earned:saved.doneToday.length >= 10},
+      {icon:"🇩🇪",title:"A1 tamamlandı",detail:"A1 kelimelerinin hepsini öğren",earned:allA1},
+      {icon:"🚀",title:"A2 tamamlandı",detail:"A2 kelimelerinin hepsini öğren",earned:allA2}
+    ];
+    const grid = $("badgeGrid");
+    grid.replaceChildren();
+    badges.forEach(badge => {
+      const card = document.createElement("div");
+      card.className = "badge-card" + (badge.earned ? " earned" : "");
+      const icon = document.createElement("span");
+      icon.className = "badge-icon";
+      icon.textContent = badge.icon;
+      const title = document.createElement("strong");
+      title.textContent = badge.title;
+      const detail = document.createElement("small");
+      detail.textContent = badge.detail;
+      card.append(icon, title, detail);
+      grid.appendChild(card);
+    });
   }
   function speakGerman(text, button) {
     if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
@@ -267,6 +330,7 @@
       saved.done.push(wordId);
       saved.coins += 5;
     }
+    recordStudyActivity();
     if (!saved.doneToday.includes(wordId)) saved.doneToday.push(wordId);
     studyQueue.shift();
     $("nextBtn").textContent = "Sonraki kelime →";
@@ -320,8 +384,12 @@
         const right = answer === q.c;
         if (right) {
           grammarCorrect += 1;
+          saved.grammarCorrect = (saved.grammarCorrect || 0) + 1;
+          recordStudyActivity();
+          persist();
           button.classList.add("correct");
           setFeedback($("grammarFeedback"), "Doğru! " + q.why, "success");
+          updateProgress();
         } else {
           button.classList.add("incorrect");
           setFeedback($("grammarFeedback"), "Doğru cevap: " + q.c + ". " + q.why, "error");
@@ -412,6 +480,7 @@
           setFeedback($("gameFeedback"), gameMatchCount === gameGoal ? "Harika! Bütün kelimeleri eşleştirdin. +10 coin 🎉" : "Doğru eşleşme! Devam et.", "success");
           if (gameMatchCount === gameGoal && gameGoal > 0) {
             saved.coins += 10;
+            recordStudyActivity();
             persist();
             updateProgress();
             $("startGameBtn").textContent = "Tekrar oyna";
@@ -468,6 +537,16 @@
     });
     $("grammarNext").addEventListener("click", renderGrammar);
     $("startGameBtn").addEventListener("click", startGame);
+    $("profileNameInput").value = saved.name || "";
+    $("profileAvatarInput").value = saved.avatar || "🦊";
+    $("profileForm").addEventListener("submit", event => {
+      event.preventDefault();
+      saved.name = $("profileNameInput").value.trim().slice(0, 24);
+      saved.avatar = $("profileAvatarInput").value;
+      persist();
+      renderProfile();
+      setFeedback($("profileFeedback"), "Profilin kaydedildi! ✨", "success");
+    });
     resetStudyQueue();
     renderWord();
     renderGrammar();
