@@ -50,7 +50,14 @@ h3 { margin:24px 0 12px; }
 .word-meta { display:flex; justify-content:space-between; gap:10px; margin:14px 0 10px; }
 .word-card { padding:25px 16px 21px; border:1px solid #3b3b64; border-radius:17px; text-align:center; background:linear-gradient(145deg,#292644,#20253e); }
 .word-card .muted { margin:0; }
+.word-title-line { display:flex; align-items:center; justify-content:center; gap:10px; }
 .word-card h2 { margin:9px 0 8px; font-size:clamp(34px,10vw,45px); overflow-wrap:anywhere; }
+.speak-button { flex:0 0 auto; display:inline-flex; align-items:center; justify-content:center; width:43px; height:43px; padding:0; border:1px solid #514a82; border-radius:13px; background:#34305a; color:white; font-size:20px; }
+.speak-button:active { transform:scale(.96); }
+.speak-button.speaking { border-color:var(--green); background:#194032; }
+.example-line { display:flex; align-items:center; justify-content:center; gap:8px; }
+.example-line .example { margin:0; }
+.speak-small { width:32px; height:32px; border-radius:10px; font-size:15px; }
 .example { margin:0; color:#d2d4e8; font-size:14px; }
 .answer-area { margin-top:21px; padding-top:19px; border-top:1px solid var(--border); }
 label { display:block; margin-bottom:9px; font-size:14px; font-weight:750; }
