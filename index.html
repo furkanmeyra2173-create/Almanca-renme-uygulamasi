@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101426">
   <meta name="description" content="A1 ve A2 Almanca kelime, gramer ve eşleştirme oyunu.">
   <title>Deutsch Quest | Almanca Öğren</title>
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
   <main class="app">
@@ -36,6 +36,18 @@
       <button type="button" class="tab" data-page="grammar" aria-selected="false">📝 Gramer</button>
       <button type="button" class="tab" data-page="games" aria-selected="false">🎮 Oyunlar</button>
     </nav>
+
+    <section class="panel level-selector" aria-label="Almanca öğrenme seviyesi">
+      <div class="level-selector-copy">
+        <p class="eyebrow">ÖĞRENME SEVİYESİ</p>
+        <h2>Seviyeni seç</h2>
+        <p class="muted">Kelimeler, gramer ve oyunlar seçtiğin seviyeye göre değişir.</p>
+      </div>
+      <div class="level-options" role="group" aria-label="Seviye seçimi">
+        <button type="button" class="level-option active" data-level="A1" aria-pressed="true"><strong>A1</strong><span>Başlangıç</span></button>
+        <button type="button" class="level-option" data-level="A2" aria-pressed="false"><strong>A2</strong><span>Temel seviye</span></button>
+      </div>
+    </section>
 
     <section id="learn" class="panel page">
       <div class="section-heading">
@@ -104,6 +116,6 @@
 
     <footer><span>Deutsch Quest</span><span>💜 Öğrenmeye devam et!</span></footer>
   </main>
-  <script src="script.js?v=5"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>
