@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101426">
   <meta name="description" content="A1 ve A2 Almanca kelime, gramer ve eşleştirme oyunu.">
   <title>Deutsch Quest | Almanca Öğren</title>
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
   <main class="app">
@@ -31,12 +31,6 @@
       <p class="muted">İlk kez doğru bildiğin her kelime için 5 coin kazanırsın.</p>
     </section>
 
-    <nav class="tabs" aria-label="Uygulama bölümleri">
-      <button type="button" class="tab active" data-page="learn" aria-selected="true">📚 Kelimeler</button>
-      <button type="button" class="tab" data-page="grammar" aria-selected="false">📝 Gramer</button>
-      <button type="button" class="tab" data-page="games" aria-selected="false">🎮 Oyunlar</button>
-      <button type="button" class="tab" data-page="profile" aria-selected="false">👤 Profil</button>
-    </nav>
 
     <section class="panel level-selector" aria-label="Almanca öğrenme seviyesi">
       <div class="level-selector-copy">
@@ -152,6 +146,13 @@
       <div id="badgeGrid" class="badge-grid"></div>
       <p class="profile-note muted">Profilin ve ilerlemen bu cihazın tarayıcısında saklanır. Başka cihaza otomatik aktarılmaz.</p>
     </section>
+
+    <nav class="tabs bottom-tabs" aria-label="Uygulama bölümleri">
+      <button type="button" class="tab active" data-page="learn" aria-selected="true"><span class="tab-icon" aria-hidden="true">📚</span><span class="tab-label">Kelimeler</span></button>
+      <button type="button" class="tab" data-page="grammar" aria-selected="false"><span class="tab-icon" aria-hidden="true">📝</span><span class="tab-label">Gramer</span></button>
+      <button type="button" class="tab" data-page="games" aria-selected="false"><span class="tab-icon" aria-hidden="true">🎮</span><span class="tab-label">Oyunlar</span></button>
+      <button type="button" class="tab" data-page="profile" aria-selected="false"><span class="tab-icon" aria-hidden="true">👤</span><span class="tab-label">Profil</span></button>
+    </nav>
 
     <footer><span>Deutsch Quest</span><span>💜 Öğrenmeye devam et!</span></footer>
   </main>
