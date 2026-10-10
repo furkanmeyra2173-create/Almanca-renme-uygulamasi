@@ -1,16 +1,10 @@
-/*
- * Deutsch Quest — Firebase Authentication configuration
- *
- * 1. Create/open a Firebase project and add a Web app.
- * 2. Copy its firebaseConfig object from Project settings > Your apps.
- * 3. Replace null below with that object.
- * 4. Firebase Console > Authentication > Sign-in method:
- *    enable Email/Password and Google.
- * 5. For Facebook, create a Facebook Login app and configure its App ID/secret
- *    in Firebase Authentication > Facebook provider.
- * 6. Add furkanmeyra2173-create.github.io to Firebase Authentication's
- *    authorized domains. For Facebook, also add the Firebase OAuth redirect URI.
- *
- * The web config identifies your project; never publish private server keys.
- */
-window.DEUTSCH_QUEST_FIREBASE_CONFIG = null;
+/* Deutsch Quest Firebase web configuration */
+window.DEUTSCH_QUEST_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCCdloibWkrtpJbeQ6LRXnFPUKm0o8QPU0",
+  authDomain: "almanca-c1d59.firebaseapp.com",
+  projectId: "almanca-c1d59",
+  storageBucket: "almanca-c1d59.firebasestorage.app",
+  messagingSenderId: "566151594008",
+  appId: "1:566151594008:web:e2c300a0ed890ac7b8436d",
+  measurementId: "G-6TCDSXJ5YH"
+};
