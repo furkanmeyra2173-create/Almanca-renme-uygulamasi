@@ -216,7 +216,10 @@
       "auth/operation-not-allowed":"Bu giriş yöntemi Firebase ayarlarında henüz açılmamış.",
       "auth/unauthorized-domain":"Uygulamanın GitHub Pages adresi Firebase yetkili alanlarına eklenmeli.",
       "auth/account-exists-with-different-credential":"Bu e-posta başka bir giriş yöntemiyle kayıtlı.",
-      "auth/network-request-failed":"Bağlantı başarısız. İnternetini kontrol et."
+      "auth/network-request-failed":"Bağlantı başarısız. İnternetini kontrol et.",
+      "auth/too-many-requests":"Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.",
+      "auth/invalid-api-key":"Firebase API anahtarı hatalı; yapılandırmayı kontrol et.",
+      "auth/configuration-not-found":"Firebase Authentication ayarlarını kontrol et."
     };
     return messages[code] || "Giriş tamamlanamadı. Firebase ayarlarını ve bilgilerini kontrol et.";
   }
@@ -288,17 +291,34 @@
       const password = $("passwordInput").value;
       localStorage.setItem(AUTH_PENDING_KEY, "1");
       $("emailSubmitBtn").disabled = true;
+      const originalButtonText = emailAuthMode === "signup" ? "Hesap oluştur" : "Giriş yap";
+      $("emailSubmitBtn").textContent = "Bağlanıyor…";
+      setAuthMessage("Firebase'e bağlanılıyor. Lütfen bekle…", "");
+      let timeoutId;
       try {
-        const result = emailAuthMode === "signup"
-          ? await firebaseAuth.createUserWithEmailAndPassword(email, password)
-          : await firebaseAuth.signInWithEmailAndPassword(email, password);
+        const authRequest = emailAuthMode === "signup"
+          ? firebaseAuth.createUserWithEmailAndPassword(email, password)
+          : firebaseAuth.signInWithEmailAndPassword(email, password);
+        const result = await Promise.race([
+          authRequest,
+          new Promise((_, reject) => {
+            timeoutId = window.setTimeout(() => {
+              const timeoutError = new Error("Firebase bağlantısı zaman aşımına uğradı.");
+              timeoutError.code = "auth/network-request-failed";
+              reject(timeoutError);
+            }, 15000);
+          })
+        ]);
         localStorage.removeItem(AUTH_PENDING_KEY);
+        setAuthMessage("Giriş başarılı!", "success");
         enterApp(result.user);
       } catch (error) {
         localStorage.removeItem(AUTH_PENDING_KEY);
         setAuthMessage(authErrorText(error), "error");
       } finally {
+        window.clearTimeout(timeoutId);
         $("emailSubmitBtn").disabled = false;
+        $("emailSubmitBtn").textContent = originalButtonText;
       }
     });
     $("googleLoginBtn").addEventListener("click", () => signInWithProvider("google"));
