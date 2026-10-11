@@ -302,7 +302,6 @@
       }
     });
     $("googleLoginBtn").addEventListener("click", () => signInWithProvider("google"));
-    $("facebookLoginBtn").addEventListener("click", () => signInWithProvider("facebook"));
     $("guestBtn").addEventListener("click", () => enterAsGuest());
     $("accountContinueBtn").addEventListener("click", () => {
       if (firebaseAuth && firebaseAuth.currentUser) enterApp(firebaseAuth.currentUser);
