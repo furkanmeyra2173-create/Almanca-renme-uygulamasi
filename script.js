@@ -347,7 +347,12 @@
         if (!firebase.apps.length) firebase.initializeApp(window.DEUTSCH_QUEST_FIREBASE_CONFIG);
         firebaseAuth = firebase.auth();
         firebaseAuth.useDeviceLanguage();
-        firebaseAuth.getRedirectResult().catch(error => {
+        firebaseAuth.getRedirectResult().then(result => {
+          if (result && result.user) {
+            localStorage.removeItem(AUTH_PENDING_KEY);
+            enterApp(result.user);
+          }
+        }).catch(error => {
           localStorage.removeItem(AUTH_PENDING_KEY);
           setAuthMessage(authErrorText(error), "error");
         });
